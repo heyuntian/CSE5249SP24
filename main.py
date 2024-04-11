@@ -21,7 +21,8 @@ def parse_args():
                             conflict_handler='resolve')
     parser.add_argument('--task', required=False, default='nc', choices=['nc', 'lp'],
                         help='Downstream task (nc or lp)')
-    parser.add_argument('--data', required=False, default='citeseer',
+    parser.add_argument('--data', required=False, default='pokec-n',
+                        choices=['citeseer', 'pokec-n'],
                         help='Input graph file')
     parser.add_argument('--embed-dim', default=128, type=int,
                         help='Number of latent dimensions to learn for each node.')
@@ -30,21 +31,21 @@ def parse_args():
                         help='The basic embedding method. If you added a new embedding method, please add its name to choices')
     parser.add_argument('--baseline', action='store_true',
                         help='Call the method stand-alone.')
-    parser.add_argument('--train-ratio', default=0.3, type=float,
+    parser.add_argument('--train-ratio', default=0.5, type=float,
                         help='MAX number of levels of coarsening.')
     parser.add_argument('--valid', action='store_true', default=False,
                         help='Use validation data.')
 
     ''' Parameters for Coarsening '''
-    parser.add_argument('--coarsen-level', default=3, type=int,
+    parser.add_argument('--coarsen-level', default=8, type=int,
                         help='MAX number of levels of coarsening.')
 
     ''' Parameters for Refinement'''
     parser.add_argument('--refine-type', required=False, default='conf',
                         choices=['gcn', 'conf'],
                         help='The method for refining embeddings.')
-    parser.add_argument('--lambda-fl', default=0.7, type=float,
-                        help='Weight of the 1st fair loss in training')
+    parser.add_argument('--lambda-fl', default=0.99, type=float,
+                        help='Weight of cross entropy.')
     parser.add_argument('--workers', default=multiprocessing.cpu_count(), type=int,
                         help='Number of workers.')
     parser.add_argument('--double-base', action='store_true',
@@ -53,7 +54,7 @@ def parse_args():
                         help='Epochs for training the refinement model')
     parser.add_argument('--report-epoch', default=100, type=int,
                         help='Frequency of showing training losses')
-    parser.add_argument('--valid-epoch', default=20, type=int,
+    parser.add_argument('--valid-epoch', default=100, type=int,
                         help='Frequency of showing validation losses')
     parser.add_argument('--learning-rate', '--lr', default=0.001, type=float,
                         help='Learning rate of the refinement model')
@@ -205,7 +206,12 @@ if __name__ == '__main__':
     tf.random.set_seed(args.seed)
 
     graph = read_data(args)
+    fair_eval = False
+    if os.path.exists(os.path.join('datasets', args.data, 'processed/sens.npy')):
+        fair_eval = True
+        graph.sens = np.load(os.path.join('datasets', args.data, 'processed/sens.npy'))
     sync_config_args(ctrl, args, graph)
+    ctrl.fair_eval = fair_eval
 
     if ctrl.only_eval:
         ctrl.embed_time = 0

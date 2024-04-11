@@ -51,22 +51,38 @@ def read_data(args):
     edge_list = np.load(os.path.join(processed_dataset_path, "edge_list.data.npy"))
     num_nodes = labels.shape[0]
     num_edges = edge_list.shape[1]
+    labeled_nodes = np.where(labels >= 0)[0]
+    num_labeled = labeled_nodes.shape[0]
 
-    num_train, num_valid = int(num_nodes * args.train_ratio), 0
+    '''
+    Unlabeled
+    Labeled
+        Label visible
+            Train
+            Valid
+        Invisible
+            Calib
+            Test
+    '''
+    num_train, num_valid = int(num_labeled * args.train_ratio), 0
     if args.valid: # use validation set
         num_valid = int(num_train / 3)
         num_train -= num_valid
-    num_unlabeled = num_nodes - num_train - num_valid
-    num_calib = min(1000, num_unlabeled / 2)
-    num_test = num_unlabeled - num_calib
-    assert num_train + num_valid + num_calib + num_test == num_nodes, \
-        f"Incorrect numbers of nodes. {[num_train, num_valid, num_calib, num_test, num_nodes]}"
+    num_invisible_label = num_labeled - num_train - num_valid
+    num_calib = min(1000, num_invisible_label / 2)
+    num_test = num_invisible_label - num_calib
+    print(f"Data split: Total nodes {num_nodes}; Labeled {num_labeled}; Train/Valid/Calib/Test {[num_train, num_valid, num_calib, num_test]}")
+    assert num_train + num_valid + num_calib + num_test == num_labeled, \
+        f"Incorrect numbers of nodes. {[num_train, num_valid, num_calib, num_test, num_labeled]}; {[num_nodes]}"
     np.random.seed(seed)
-    permu = np.random.permutation(num_nodes)
-    status = np.zeros(num_nodes)
-    status[permu[num_train:num_train + num_valid]] = 1 # 1 for validation data
-    status[permu[num_train + num_valid:num_train + num_valid + num_calib]] = 2 # 2 for calibration data
-    status[permu[num_train + num_valid + num_calib:]] = 3 # 3 for test data
+
+
+    permu = np.random.permutation(num_labeled)
+    status = np.ones(num_nodes) * -1 # -1 for unlabeled nodes
+    status[labeled_nodes[permu[:num_train]]] = 0 # 0 for training data
+    status[labeled_nodes[permu[num_train:num_train + num_valid]]] = 1 # 1 for validation data
+    status[labeled_nodes[permu[num_train + num_valid:num_train + num_valid + num_calib]]] = 2 # 2 for calibration data
+    status[labeled_nodes[permu[num_train + num_valid + num_calib:]]] = 3 # 3 for test data
 
     from collections import defaultdict
     neighbors = defaultdict(set)

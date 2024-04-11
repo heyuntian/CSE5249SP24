@@ -34,6 +34,7 @@ class Config:
         # Evaluation
         self.only_eval = False
         self.no_eval = False
+        self.fair_eval = False
 
 
 class RefineModelSetting:

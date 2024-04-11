@@ -1,0 +1,35 @@
+{
+  "results": [
+    {
+      "aps-efficiency": 3.572521448135376,
+      "aps-coverage": 0.9176228046417236,
+      "aps-CoverageDisparity-0": 0.022165298461914062,
+      "aps-EfficiencyDisparity-0": 0.012613296508789062,
+      "aps-CoverageDisparity-1": 0.025709807872772217,
+      "aps-EfficiencyDisparity-1": 0.040482521057128906,
+      "daps-efficiency": 3.5263311862945557,
+      "daps-coverage": 0.9052662253379822,
+      "daps-CoverageDisparity-0": 0.00032067298889160156,
+      "daps-EfficiencyDisparity-0": 0.01717352867126465,
+      "daps-CoverageDisparity-1": 0.011882960796356201,
+      "daps-EfficiencyDisparity-1": 0.014265298843383789,
+      "test|auroc": 0.4861997429341994,
+      "test|accuracy": 0.5207413945278023,
+      "test|micro-f1": 0.5207413945278023,
+      "test|macro-f1": 0.1726290893855787,
+      "test|dp-0": 2.636926365084946e-05,
+      "test|eo-0": 0.0002428595907986164,
+      "test|dp-1": 0.00014543339784722775,
+      "test|eo-1": 0.0007017543539404869,
+      "dataset": "pokec-n",
+      "baseline": "ConfMILE",
+      "method": "node2vec",
+      "dimension": 128,
+      "c-level": 8,
+      "lr": 0.001,
+      "epoch": 1000,
+      "lambda": 0.99,
+      "seed": 20
+    }
+  ]
+}

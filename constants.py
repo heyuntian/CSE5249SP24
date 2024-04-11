@@ -11,6 +11,7 @@ CPU_AFF = "enable_cpu_affinity"
 
 
 class Stage(str, Enum):
+    UNLABELED = "unlabeled"
     TRAIN = "train"
     VALIDATION = "validation"
     CALIBRATION = "calibration"
@@ -19,6 +20,7 @@ class Stage(str, Enum):
     @property
     def mask_dstr(self):
         return {
+            Stage.UNLABELED: "unlabeled_mask",
             Stage.TRAIN: "train_mask",
             Stage.VALIDATION: "val_mask",
             Stage.CALIBRATION: "calib_mask",

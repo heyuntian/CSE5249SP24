@@ -74,10 +74,10 @@ def mile_match(ctrl, graph):
     return groups, coarse_graph_size
 
 
-def is_Consistent_Status(i: int, j: int):
-    if i >= 2: # calib or test
-        return j >= 2
-    return i == j
+def is_Consistent_Status(x_status: int, y_status: int, x_label: int, y_label: int):
+    if x_status >= 2: # calib or test
+        return y_status >= 2
+    return x_status == y_status and x_label == y_label
 
 def confmile_match(ctrl, graph):
     """
@@ -111,12 +111,13 @@ def confmile_match(ctrl, graph):
         max_idx = idx
         max_wgt = -1
         node_status = graph.status[idx]
+        node_label = graph.labels[idx]
         for j in range(adj_idx[idx], adj_idx[idx + 1]):
             neigh = adj_list[j]
             if neigh == idx:
                 continue
             curr_wgt = norm_adj_wgt[j]
-            if not matched[neigh] and is_Consistent_Status(node_status, graph.status[neigh]) \
+            if not matched[neigh] and is_Consistent_Status(node_status, graph.status[neigh], node_label, graph.labels[neigh]) \
                 and max_wgt < curr_wgt \
                 and node_wgt[idx] + node_wgt[neigh] <= max_node_wgt:
                 max_idx, max_wgt = neigh, curr_wgt

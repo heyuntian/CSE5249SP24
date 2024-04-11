@@ -22,6 +22,7 @@ class Graph(object):
         self.labels = np.zeros(node_num, dtype=np.int32)
         self.status = np.zeros(node_num, dtype=np.int32)
         self.label_range = 0
+        self.sens = None
 
 
         self.coarser = None
