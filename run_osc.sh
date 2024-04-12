@@ -1,6 +1,6 @@
 #!/bin/sh
 #SBATCH --account=PAS2030
-#SBATCH -p XXX
+#SBATCH -p serial
 #SBATCH --nodes=1 --ntasks-per-node=48
 #SBATCH --time 2-00:00:00
 #SBATCH --job-name=grid-search
