@@ -1,9 +1,8 @@
 #!/bin/sh
 #SBATCH --account=PAS2030
-#SBATCH -p serial
+#SBATCH -p serial-48core
 #SBATCH --nodes=1 --ntasks-per-node=48
 #SBATCH --time 2-00:00:00
-#SBATCH --job-name=grid-search
 
 source ~/.bashrc
 export PYTHONNOUSERSITE=true
@@ -20,7 +19,7 @@ echo $GPUS
 #which nvidia-smi
 
 #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/he.1773/miniconda3-23.9.0/envs/mg-nov/lib
-DATA=citeseer
+DATA='citeseer'
 EPOCH=1000
 
 for CR_LEVEL in 1 2 3
